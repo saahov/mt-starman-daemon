@@ -13,6 +13,7 @@
 DIR=/absolute/path/to/mt-directory
 SCRIPT=/absolute/path/to/mt.psgi
 USER=www-data
+GROUP=www-data
 
 WORKERS=3
 LISTEN=127.0.0.1:50000
@@ -28,7 +29,7 @@ case "$1" in
         --pidfile=$PIDFILE \
         --exec /usr/local/bin/starman -- -D --pid $PIDFILE \
         --listen $LISTEN --error-log $ERROR_LOG \
-        --user www-data --group www-data \
+        --user $USER --group $GROUP \
         --workers $WORKERS $SCRIPT
     ;;
   stop)
