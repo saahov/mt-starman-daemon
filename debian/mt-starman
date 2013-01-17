@@ -1,0 +1,41 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:          starman-mt
+# Required-Start:    $local_fs $remote_fs $network
+# Required-Stop:     $local_fs $remote_fs $network
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Starman daemon
+# Description:       Start and stop Starman daemon.
+### END INIT INFO
+
+DIR=/absolute/path/to/mt-directory
+SCRIPT=/absolute/path/to/mt.psgi
+USER=www-data
+
+WORKERS=3
+LISTEN=127.0.0.1:50000
+ERROR_LOG=/var/log/mt-starman.log
+
+# If you have a permission problem,
+# move PID-file to USER home directory
+PIDFILE=/var/run/mt.pid
+
+case "$1" in
+  start)
+    start-stop-daemon --start --chuid $USER --chdir $DIR \
+        --pidfile=$PIDFILE \
+        --exec /usr/local/bin/starman -- -D --pid $PIDFILE \
+        --listen $LISTEN --error-log $ERROR_LOG \
+        --user www-data --group www-data \
+        --workers $WORKERS $SCRIPT
+    ;;
+  stop)
+    start-stop-daemon --stop --pidfile $PIDFILE
+    ;;
+  *)
+    echo "Usage: $SCRIPTNAME {start|stop}" >&2
+    exit 3
+    ;;
+esac
